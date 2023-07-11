@@ -21,11 +21,40 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = Post.new(post_params)
+
+    if params[:post][:username].present? &&  params[:post][:password].present?
+      browser = Watir::Browser.new
+      browser.goto 'https://www.linkedin.com/login'
+      browser.input(name: 'session_key').send_keys(params[:post][:username], :return)
+      browser.input(name: 'session_password').send_keys(params[:post][:password], :return)
+      sleep(1.minutes)
+      browser.scroll.from(8, 750).by(0, 750)
+      page = browser.html
+    end
+
+    data=Nokogiri::HTML.parse(page)
+    temp = []
+    cards = data.css(".scaffold-layout__main")
+
+    cards.css(".feed-shared-update-v2").each do |card|
+      @post = Post.new(post_params)
+      @title = card&.css(".update-components-actor__title")&.css(".update-components-actor__name span")&.first&.text
+      @content = card.css(".update-components-text").css(".break-words span").first&.text
+      @image = card.css(".ivm-image-view-model").css(".ivm-view-attr__img--centered").last.attr("src")
+      @video = card.css(".media-player").css("video").attr("src")&.value
+      @iframe = card.css("iframe").attr("src")&.value
+
+      @post.title = @title if @title.present?
+      @post.content = @content if @content.present?
+      @post.image = @image if @image.present?
+      @post.name = @video if @video.present?
+      @post.image = browser.iframe(src: @iframe).div.img.src if @iframe.present?
+      temp << @post.save
+    end
 
     respond_to do |format|
-      if @post.save
-        format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
+      if temp
+        format.html { redirect_to posts_url, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }

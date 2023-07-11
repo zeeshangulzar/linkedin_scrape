@@ -73,3 +73,4 @@ group :test do
 end
 
 gem 'devise'
+gem 'watir', '~> 7.2', '>= 7.2.2'

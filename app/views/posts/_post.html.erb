@@ -1,8 +1,4 @@
 <div id="<%= dom_id post %>">
-  <p>
-    <strong>Name:</strong>
-    <%= post.name %>
-  </p>
 
   <p>
     <strong>Title:</strong>
@@ -16,7 +12,12 @@
 
   <p>
     <strong>Image:</strong>
-    <%= post.image %>
+    <%= image_tag post.image %>
+  </p>
+
+  <p>
+    <strong>Video:</strong>
+    <%= video_tag(post.name, size: "100x100") if post.name.present?%>
   </p>
 
 </div>
