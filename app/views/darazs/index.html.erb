@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Darazs</h1>
+
+<div id="darazs">
+  <% @darazs.each do |daraz| %>
+    <%= render daraz %>
+    <p>
+      <%= link_to "Show this daraz", daraz %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New daraz", new_daraz_path %>

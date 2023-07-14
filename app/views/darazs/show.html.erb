@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @daraz %>
+
+<div>
+  <%= link_to "Edit this daraz", edit_daraz_path(@daraz) %> |
+  <%= link_to "Back to darazs", darazs_path %>
+
+  <%= button_to "Destroy this daraz", @daraz, method: :delete %>
+</div>
