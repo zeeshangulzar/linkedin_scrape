@@ -21,55 +21,88 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-
     if params[:post][:username].present? &&  params[:post][:password].present?
-      browser = Watir::Browser.new
-      browser.goto 'https://www.linkedin.com/login'
-      browser.input(name: 'session_key').send_keys(params[:post][:username], :return)
-      browser.input(name: 'session_password').send_keys(params[:post][:password], :return)
-      sleep(1.minutes)
+      if params[:post][:site_name] == "linkedin"
+        browser = Watir::Browser.new
+        browser.goto 'https://www.linkedin.com/login'
+        browser.input(name: 'session_key').send_keys(params[:post][:username], :return)
+        browser.input(name: 'session_password').send_keys(params[:post][:password], :return)
+        sleep(1.minutes)
 
-      pages = []
-      (1..20).each do |num|
-        if pages.present?
+        pages = []
+        (1..20).each do |num|
+          if pages.present?
+            sleep 2
+            browser.scroll.from(1, 750).by(0, 10000)
+            pages += browser.html
+            browser.button(value: 'See new posts').click
+          else
+            sleep 1
+            pages = browser.html
+          end
+        end
+
+        data=Nokogiri::HTML.parse(pages)
+        temp = []
+        total_pages = data.css(".scaffold-layout__main")
+        total_pages.each do |cards|
+          cards.css(".feed-shared-update-v2").each do |card|
+            @post = Post.new(post_params)
+            @title = card&.css(".update-components-actor__title")&.css(".update-components-actor__name span")&.first&.text
+            @content = card.css(".update-components-text").css(".break-words span").first&.text
+            @image = card.css(".ivm-image-view-model").css(".ivm-view-attr__img--centered").last.attr("src")
+            @video = card.css(".media-player").css("video").attr("src")&.value
+            @iframe = card.css("iframe").attr("src")&.value
+
+            @post.title = @title if @title.present?
+            @post.content = @content if @content.present?
+            @post.image = @image if @image.present?
+            @post.name = @video if @video.present?
+            temp << @post.save
+          end
+        end
+      end
+
+      if params[:post][:site_name] == "facebook"
+        browser = Watir::Browser.new
+        browser.goto 'https://facebook.com/login'
+        browser.input(name: 'email').send_keys(params[:post][:username], :return)
+        browser.input(name: 'pass').send_keys(params[:post][:password], :return)
+        sleep(1.minutes)
+        (1..50).each do |num|
           sleep 2
-          browser.scroll.from(1, 750).by(0, 10000)
-          pages += browser.html
-          browser.button(value: 'See new posts').click
-        else
-          sleep 1
-          pages = browser.html
+          browser.scroll.from(8, 11).by(0, 10000000)
+        end
+
+        pages = browser.html
+
+        data=Nokogiri::HTML.parse(pages)
+
+        total_pages = data.css(".x1lliihq")
+        temp = []
+        total_pages.each do |card|
+          @title = card.css(".x1i10hfl strong").text
+          @content = card.css(".x1iorvi4").text
+          @image = card.css(".x10l6tqk img").attr("src")&.text
+          @video = card.css(".x5yr21d video").attr("src")&.text
+          if @title.present?
+            @post = Post.new(post_params)
+            @post.title = @title
+            @post.content = @content if @content.present?
+            @post.image = @image   if @image.present?
+            @post.name = @video   if @video.present?
+            temp << @post.save
+          end
         end
       end
     end
-
-    data=Nokogiri::HTML.parse(pages)
-    temp = []
-    total_pages = data.css(".scaffold-layout__main")
-    total_pages.each do |cards|
-      cards.css(".feed-shared-update-v2").each do |card|
-        @post = Post.new(post_params)
-        @title = card&.css(".update-components-actor__title")&.css(".update-components-actor__name span")&.first&.text
-        @content = card.css(".update-components-text").css(".break-words span").first&.text
-        @image = card.css(".ivm-image-view-model").css(".ivm-view-attr__img--centered").last.attr("src")
-        @video = card.css(".media-player").css("video").attr("src")&.value
-        @iframe = card.css("iframe").attr("src")&.value
-
-        @post.title = @title if @title.present?
-        @post.content = @content if @content.present?
-        @post.image = @image if @image.present?
-        @post.name = @video if @video.present?
-        temp << @post.save
-      end
-    end
-
     respond_to do |format|
       if temp
         format.html { redirect_to posts_url, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+        format.json { render json: "fields required", status: :unprocessable_entity }
       end
     end
   end

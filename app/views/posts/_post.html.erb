@@ -12,12 +12,12 @@
 
   <p>
     <strong>Image:</strong>
-    <%= image_tag post.image %>
+    <%= image_tag post.image if post&.image.present?%>
   </p>
 
   <p>
     <strong>Video:</strong>
-    <%= video_tag(post.name, size: "100x100") if post.name.present?%>
+    <%= video_tag(post&.name.include?("blob") ? "" : post&.name, size: "100x100") if post&.name.present?%>
   </p>
 
 </div>
