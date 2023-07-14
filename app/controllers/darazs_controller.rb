@@ -21,11 +21,44 @@ class DarazsController < ApplicationController
 
   # POST /darazs or /darazs.json
   def create
-    @daraz = Daraz.new(daraz_params)
+    browser = Watir::Browser.new
+    browser.goto 'https://daraz.pk'
+    sleep 5
+    browser.input(name: 'q').send_keys(params[:daraz][:title], :return)
+    last = browser.elements(class: "ant-pagination-item").last.title.to_i
+
+      pages = []
+      (1..last).each do |num|
+        if pages.present?
+          sleep 5
+          browser.li(title: "Next Page").click!  if browser.li(title: "Next Page").present?
+          pages += browser.html
+        else
+          sleep 1
+          pages = browser.html
+        end
+      end
+
+      data=Nokogiri::HTML.parse(pages)
+
+      products = data.css(".gridItem--Yd0sa")
+      temp = []
+      products.each do |product|
+        @price = product.css(".price--NVB62")&.text.gsub('Rs.', '').gsub(',', '').strip
+        @image = product.css(".mainPic--ehOdr img").attr("src")&.text
+        @title = product.css(".title--wFj93 a")&.text
+        if @price.to_i < params[:daraz][:price].to_i
+          @daraz = Daraz.new(daraz_params)
+          @daraz.title = @title if @title.present?
+          @daraz.price = @price if @price.present?
+          @daraz.images = @image if @image.present?
+          temp << @daraz.save
+        end
+      end
 
     respond_to do |format|
-      if @daraz.save
-        format.html { redirect_to daraz_url(@daraz), notice: "Daraz was successfully created." }
+      if temp
+        format.html { redirect_to darazs_url, notice: "Daraz was successfully created." }
         format.json { render :show, status: :created, location: @daraz }
       else
         format.html { render :new, status: :unprocessable_entity }

@@ -5,18 +5,13 @@
   </p>
 
   <p>
-    <strong>Body:</strong>
-    <%= daraz.body %>
-  </p>
-
-  <p>
     <strong>Price:</strong>
     <%= daraz.price %>
   </p>
 
   <p>
     <strong>Images:</strong>
-    <%= daraz.images %>
+    <%= image_tag(daraz&.images, size: "150x150") if daraz.images.present?%>
   </p>
 
 </div>
