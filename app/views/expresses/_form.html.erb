@@ -1,0 +1,17 @@
+<%= form_with(model: express) do |form| %>
+  <% if express.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(express.errors.count, "error") %> prohibited this express from being saved:</h2>
+
+      <ul>
+        <% express.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

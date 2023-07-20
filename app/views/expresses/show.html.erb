@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @express %>
+
+<div>
+  <%= link_to "Edit this express", edit_express_path(@express) %> |
+  <%= link_to "Back to expresses", expresses_path %>
+
+  <%= button_to "Destroy this express", @express, method: :delete %>
+</div>

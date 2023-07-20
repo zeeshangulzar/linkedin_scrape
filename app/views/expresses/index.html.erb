@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Expresses</h1>
+
+<div id="expresses">
+  <% @expresses.each do |express| %>
+    <%= render express %>
+    <p>
+      <%= link_to "Show this express", express %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New express", new_express_path %>

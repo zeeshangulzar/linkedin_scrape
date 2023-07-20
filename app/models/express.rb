@@ -1,0 +1,2 @@
+class Express < ApplicationRecord
+end

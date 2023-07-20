@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :expresses
   resources :darazs
   devise_for :users
   resources :posts
