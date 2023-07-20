@@ -1,0 +1,8 @@
+<div class="container">
+  <h1> Scrappers</h1>
+  <% if current_user&.admin? %>
+    <% t_name.each do |model| %>
+      <%= link_to model, "/#{model.pluralize.downcase}/new", class: "btn btn-primary"  %>
+    <% end %>
+  <% end %>
+</div>

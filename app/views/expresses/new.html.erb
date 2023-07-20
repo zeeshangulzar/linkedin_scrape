@@ -1,7 +1,10 @@
 <h1>New express</h1>
 
-<%= render "form", express: @express %>
-
+<% if current_user&.admin? %>
+  <%= render "form", express: @express %>
+<% else %>
+  <%= "plese login for this process" %>
+<% end %>
 <br>
 
 <div>

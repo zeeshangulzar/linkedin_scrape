@@ -1,6 +1,10 @@
 <h1>New post</h1>
 
-<%= render "form", post: @post %>
+<% if current_user&.admin? %>
+  <%= render "form", post: @post %>
+<% else %>
+  <%= "plese login for this process" %>
+<% end %>
 
 <br>
 

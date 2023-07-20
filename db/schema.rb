@@ -10,20 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_20_060400) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_21_095501) do
   create_table "darazs", force: :cascade do |t|
     t.string "title"
     t.text "body"
     t.string "price"
     t.text "images"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "darzs", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
-    t.string "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -58,6 +50,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_060400) do
     t.string "first_name"
     t.string "last_name"
     t.string "picture_url"
+    t.integer "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
