@@ -21,11 +21,52 @@ class ExpressesController < ApplicationController
 
   # POST /expresses or /expresses.json
   def create
-    @express = Express.new(express_params)
+
+    browser = Watir::Browser.new
+    browser.goto 'https://aliexpress.com'
+    sleep 5
+    browser.input(name: 'SearchText').send_keys(params[:express][:title], :return)
+
+    pages = []
+    loop do
+      if pages.present?
+        sleep 3
+        browser.scroll.from(8, 11).by(0, 5200)
+        if browser.li(class: "next-next").present?
+          browser.li(class: "next-next").click!
+        else
+          loop_break = true
+        end
+        pages += browser.html
+      else
+        sleep 1
+        browser.scroll.from(8, 11).by(0, 5200)
+        pages = browser.html
+      end
+      break if loop_break
+    end
+
+    data=Nokogiri::HTML.parse(pages)
+
+    products = data.css("a.manhattan--container--1lP57Ag")
+    temp = []
+    products.each do |product|
+      sleep 1
+      @price = product.css(".manhattan--price--WvaUgDY").text.gsub('PKR', '').gsub(',', '').strip
+      @image = product.css(".manhattan--image--1p6LxVV img").attr("src")&.text
+      @title = product.css(".manhattan--titleText--WccSjUS").text
+      if @image.present?
+        @express = Express.new(express_params)
+        @express.title = @title if @title.present?
+        @express.price = @price if @price.present?
+        @express.image = @image if @image.present?
+        temp << @express.save
+      end
+    end
 
     respond_to do |format|
-      if @express.save
-        format.html { redirect_to express_url(@express), notice: "Express was successfully created." }
+      if temp
+        format.html { redirect_to expresses_url, notice: "Express was successfully created." }
         format.json { render :show, status: :created, location: @express }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -65,6 +106,6 @@ class ExpressesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def express_params
-      params.fetch(:express, {})
+      params.require(:express).permit(:title, :price, :image)
     end
 end

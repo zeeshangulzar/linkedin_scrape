@@ -1,2 +1,16 @@
 <div id="<%= dom_id express %>">
+	<p>
+    <strong>Title:</strong>
+    <%= express.title %>
+  </p>
+
+  <p>
+    <strong>Price:</strong>
+    <%= express.price %>
+  </p>
+
+  <p>
+    <strong>Images:</strong>
+    <%= image_tag(express&.image, size: "150x150") if express.image.present?%>
+  </p>
 </div>
