@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_21_095501) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_24_114449) do
+  create_table "amazons", force: :cascade do |t|
+    t.string "title"
+    t.string "price"
+    t.text "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "darazs", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -33,6 +41,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_21_095501) do
     t.string "title"
     t.text "content"
     t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stackoverflows", force: :cascade do |t|
+    t.string "name"
+    t.string "title"
+    t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

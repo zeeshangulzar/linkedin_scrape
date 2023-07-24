@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @amazon %>
+
+<div>
+  <%= link_to "Edit this amazon", edit_amazon_path(@amazon) %> |
+  <%= link_to "Back to amazons", amazons_path %>
+
+  <%= button_to "Destroy this amazon", @amazon, method: :delete %>
+</div>

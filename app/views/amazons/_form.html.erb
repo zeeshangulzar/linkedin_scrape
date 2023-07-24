@@ -1,0 +1,22 @@
+<%= form_with(model: amazon) do |form| %>
+  <% if amazon.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(amazon.errors.count, "error") %> prohibited this amazon from being saved:</h2>
+
+      <ul>
+        <% amazon.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+    <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title, required: true %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

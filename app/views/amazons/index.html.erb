@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Amazons</h1>
+
+<div id="amazons">
+  <% @amazons.each do |amazon| %>
+    <%= render amazon %>
+    <p>
+      <%= link_to "Show this amazon", amazon %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New amazon", new_amazon_path %>
