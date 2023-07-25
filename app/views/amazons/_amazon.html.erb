@@ -1,2 +1,17 @@
 <div id="<%= dom_id amazon %>">
+  <p>
+    <strong>Title:</strong>
+    <%= amazon.title %>
+  </p>
+
+  <p>
+    <strong>Price:</strong>
+    <%= amazon.price %>
+  </p>
+
+  <p>
+    <strong>Images:</strong>
+    <%= image_tag(amazon&.image, size: "250x150") if amazon.image.present?%>
+  </p>
+
 </div>
