@@ -3,43 +3,69 @@
 
 <div class="container">
   <div class="lg-col-4">
-    <h1><%= "express" %></h1>
-    <% express = Express.where("title like 'iphone%'").first %>
+    <h1><%= "express".upcase %></h1>
+    <% express = Express.where("title like '%iphone 13%'").first %>
     <p>
       <strong>Title:</strong>
-      <%= express.title %>
+      <%= express&.title %>
     </p>
 
     <p>
       <strong>Price:</strong>
-      <%= express.price %>
+      <%= express&.price %>
     </p>
 
     <p>
       <strong>Images:</strong>
-      <%= image_tag(express&.image, size: "150x150") if express.image.present?%>
+      <%= image_tag(express&.image, size: "150x150") if express&.image.present?%>
     </p>
   </div>
 
 
   <div class="lg-col-4">
-    <h1><%= "amazon" %></h1>
+    <h1><%= "amazon".upcase %></h1>
 
-    <% amazon=  Amazon.where("title like 'iphone%'").first %>
+    <% amazon=  Amazon.where("title like '%iphone 13%'").first %>
 
     <p>
       <strong>Title:</strong>
-      <%= amazon.title %>
+      <%= amazon&.title %>
     </p>
 
     <p>
       <strong>Price:</strong>
-      <%= amazon.price %>
+      <%= amazon&.price.to_i * 300 %>
     </p>
 
     <p>
       <strong>Images:</strong>
-      <%= image_tag(amazon&.image, size: "150x150") if amazon.image.present?%>
+      <%= image_tag(amazon&.image, size: "150x150") if amazon&.image.present?%>
     </p>
   </div>
 </div>
+
+
+<table class="table">
+  <% @amazons.zip(@expresses) do |amazon, express| %>
+    <tr>
+      <th><%= "Title" %></th>
+      <td ><%= truncate(amazon.title) %></td>
+      <td><%= truncate(express&.title) %></td>
+    </tr>
+    <tr>
+      <th><%= "Price" %></th>
+      <td><%= truncate(amazon.price) %></td>
+      <td><%= truncate(express&.price) %></td>
+    </tr>
+    <tr>
+    <th>Winner</th>
+    <td><%= amazon.price.to_i > express&.price.to_i ? truncate(express&.title) : truncate(amazon.title) %></td>
+    <td></td>
+  <% end %>
+</table>
+
+<style>
+td {
+  border: 1px solid black
+}
+</style>
